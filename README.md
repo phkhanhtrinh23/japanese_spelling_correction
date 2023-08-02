@@ -79,7 +79,7 @@ Using the model trained with the parameters described above, it achieved a GLEU 
 | Method                    | GLEU  |
 | ------------------------- | ----- |
 | Chollampatt and Ng, 2018  | 0.739 |
-| __gector-jsc (mine)__  | __0.81__  |
+| __gector_jsc (mine)__  | __0.83__  |
 
 In this project GLEU score was used as in Koyama et al. 2020.
 
