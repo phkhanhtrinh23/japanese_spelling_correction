@@ -1,0 +1,8 @@
+*.pyc
+utils/data/corpora/*
+utils/data/model/*
+utils/data/saved_data/*
+utils/data/TEC_JL/*
+weights*/
+utils/preprocess_*.py
+__pycache__
