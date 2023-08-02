@@ -46,7 +46,7 @@ python ./utils/preprocess.py
 bash train.sh
 ```
 
-## Demo App
+## Demo
 
 Trained weights can be downloaded [here](https://drive.google.com/file/d/1nhWzDZnZKxLvqwYMLlwRNOkMK2aXv4-5/view?usp=sharing). The trained weights have been pre-trained on JaWiki and Lang8.
 
@@ -81,4 +81,8 @@ Using the model trained with the parameters described above, it achieved a GLEU 
 | Chollampatt and Ng, 2018  | 0.739 |
 | __gector-jsc (mine)__  | __0.81__  |
 
-In this project GLEU score was used as in Koyama et al. 2020, which works "out of the box" from the NLTK library.
+In this project GLEU score was used as in Koyama et al. 2020.
+
+## Credit
+[jonnyli1125
+](https://github.com/jonnyli1125/gector-ja)
