@@ -21,28 +21,7 @@ def train(corpora_dir, output_weights_path, vocab_dir, transforms_file,
           dataset_ratio, bert_trainable, learning_rate, class_weight_path,
           source_file, output_dir, use_existing, processes,
           filename='edit_tagged_sentences.tfrec.gz'):
-    # try:
-    #     tpu = tf.distribute.cluster_resolver.TPUClusterResolver(
-    #         tpu='grpc://' + os.environ['COLAB_TPU_ADDR'])
-    #     tf.config.experimental_connect_to_cluster(tpu)
-    #     tf.tpu.experimental.initialize_tpu_system(tpu)
-    #     print('TPUs: ', tf.config.list_logical_devices('TPU'))
-    # except (ValueError, KeyError) as e:
-    #     tpu = None
-    
-    sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
-    # keras.backend.set_session(sess)
-
-    # print("Generating new data set...")
-    # preprocess_file(source_file, output_dir, processes, use_existing)
-    # print("Finished.")
-    
     print("Num GPUs Available: ", tf.config.list_physical_devices('GPU'))
-
-    # tf.debugging.set_log_device_placement(True)
-
-    # for epoch_i in range(n_epochs):
-    #     print('Epoch: {}'.format(epoch_i))
 
     files = [os.path.join(root, filename)
             for root, dirs, files in tf.io.gfile.walk(corpora_dir)
@@ -59,11 +38,6 @@ def train(corpora_dir, output_weights_path, vocab_dir, transforms_file,
         dataset = dataset.take(dataset_len)
     
     print('Length:', dataset_len, tf.data.experimental.cardinality(dataset))
-
-    # dataset_to_numpy = list(dataset.as_numpy_iterator())
-    # shape = tf.shape(dataset_to_numpy)
-    # print("The shape of dataset[0]:", np.array(list(dataset_to_numpy[0])).shape)
-
     print('Loaded dataset:', dataset, dataset.cardinality().numpy())
 
     dev_len = int(dataset_len * dev_ratio)
@@ -76,18 +50,9 @@ def train(corpora_dir, output_weights_path, vocab_dir, transforms_file,
     train_set = train_set.batch(batch_size, num_parallel_calls=AUTO)
     dev_set = dev_set.batch(batch_size, num_parallel_calls=AUTO)
 
-    # if tpu:
-    #     strategy = tf.distribute.TPUStrategy(tpu)
-    # else:
-    #     strategy = tf.distribute.MultiWorkerMirroredStrategy()
-    # with strategy.scope():
-    tf.debugging.set_log_device_placement(True)
-    gpus = tf.config.list_logical_devices('GPU')
-    strategy = tf.distribute.MirroredStrategy(gpus)
-    with strategy.scope():
-        gec = GEC(vocab_path=vocab_dir, verb_adj_forms_path=transforms_file,
-            pretrained_weights_path=pretrained_weights_path,
-            bert_trainable=bert_trainable, learning_rate=learning_rate)
+    gec = GEC(vocab_path=vocab_dir, verb_adj_forms_path=transforms_file,
+        pretrained_weights_path=pretrained_weights_path,
+        bert_trainable=bert_trainable, learning_rate=learning_rate)
     model_checkpoint_callback = keras.callbacks.ModelCheckpoint(
         filepath=output_weights_path + '_checkpoint',
         save_weights_only=True,
@@ -132,7 +97,7 @@ if __name__ == '__main__':
                         default='./utils/data/model/model_checkpoint')
     parser.add_argument('-b', '--batch_size', type=int,
                         help='Number of samples per batch',
-                        default=512)
+                        default=256)
     parser.add_argument('-e', '--n_epochs', type=int,
                         help='Number of epochs',
                         default=5)
