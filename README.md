@@ -85,4 +85,4 @@ In this project GLEU score was used as in Koyama et al. 2020.
 
 ## Credit
 [jonnyli1125
-](https://github.com/jonnyli1125/gector-ja)
+](https://github.com/jonnyli1125)
