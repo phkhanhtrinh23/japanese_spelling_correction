@@ -17,6 +17,7 @@ class GEC:
                  bert_model='cl-tohoku/bert-base-japanese-v2',
                  pretrained_weights_path=None,
                  bert_trainable=True):
+        print("bert trainable:", bert_trainable)
         self.max_len = max_len
         self.confidence = confidence
         self.min_error_prob = min_error_prob

@@ -60,15 +60,15 @@ def train(corpora_dir, output_weights_path, vocab_dir, transforms_file,
         mode='max',
         save_best_only=True)
     early_stopping_callback = keras.callbacks.EarlyStopping(
-        monitor='loss', patience=3)
+        monitor='val_labels_probs_accuracy', patience=3)
     gec.model.fit(train_set, epochs=n_epochs, validation_data=dev_set,
         callbacks=[model_checkpoint_callback, early_stopping_callback])
-    gec.model.save_weights(output_weights_path)
+    # gec.model.save_weights(output_weights_path)
 
-        # # Generate data at every epoch
-        # print("Generating new data set at the end of epoch: {}...".format(epoch_i))
-        # preprocess_file(source_file, output_dir, processes, use_existing)
-        # print("Finished generating data.")
+    # # Generate data at every epoch
+    # print("Generating new data set at the end of epoch: {}...".format(epoch_i))
+    # preprocess_file(source_file, output_dir, processes, use_existing)
+    # print("Finished generating data.")
 
 def main(args):
     train(args.corpora_dir, args.output_weights_path, args.vocab_dir,
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                         default="./utils/data/saved_data/ja_input")
     parser.add_argument('-o', '--output_weights_path',
                         help='Path to save model weights to',
-                        default="./weights/checkpoints")
+                        default="./weights/gector_jsc")
     parser.add_argument('-v', '--vocab_dir',
                         help='Path to output vocab folder',
                         default='./utils/data/output_vocab')
@@ -97,13 +97,13 @@ if __name__ == '__main__':
                         default='./utils/data/model/model_checkpoint')
     parser.add_argument('-b', '--batch_size', type=int,
                         help='Number of samples per batch',
-                        default=256)
+                        default=64)
     parser.add_argument('-e', '--n_epochs', type=int,
                         help='Number of epochs',
-                        default=5)
+                        default=15)
     parser.add_argument('-d', '--dev_ratio', type=float,
                         help='Percent of whole dataset to use for dev set',
-                        default=0.2)
+                        default=0.3)
     parser.add_argument('-l', '--dataset_len', type=int,
                         help='Cardinality of dataset')
     parser.add_argument('-r', '--dataset_ratio', type=float,
@@ -111,10 +111,11 @@ if __name__ == '__main__':
                         default=1.0)
     parser.add_argument('-bt', '--bert_trainable',
                         help='Enable training for BERT encoder layers',
-                        action='store_true')
+                        type=bool,
+                        default=True)
     parser.add_argument('-lr', '--learning_rate', type=float,
                         help='Learning rate',
-                        default=1e-4)
+                        default=2e-4)
     parser.add_argument('-cw', '--class_weight_path',
                         help='Path to class weight file')
 
