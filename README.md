@@ -73,7 +73,7 @@ You may need to `pip install flask` if Flask is not already installed.
 
 The model can be evaluated with `evaluate.py` on a parallel sentences corpus. The evaluation corpus used was [TMU Evaluation Corpus for Japanese Learners (TEC_JL)](https://github.com/koyama-aomi/TEC-JL), and the metric is GLEU score.
 
-Using the model trained with the parameters described above, it achieved a GLEU score of around 0.81, which appears to outperform the CNN-based method by Chollampatt and Ng, 2018 (state of the art on the CoNLL-2014 dataset prior to transformer-based models), that Koyama et al. 2020 chose to use in their paper.
+Using the model trained with the parameters described above, it achieved a GLEU score of around **0.83**, which appears to outperform the CNN-based method by Chollampatt and Ng, 2018 (state of the art on the CoNLL-2014 dataset prior to transformer-based models), that Koyama et al. 2020 chose to use in their paper.
 
 #### TMU Evaluation Corpus for Japanese Learners (GEC dataset for Japanese)
 | Method                    | GLEU  |
