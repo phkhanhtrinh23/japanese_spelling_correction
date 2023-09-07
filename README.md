@@ -27,7 +27,9 @@ Example error-generated sentence:
 
 ## Model Architecture
 
-The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) and two linear classification heads, one for `labels` and one for `detect`. `labels` predicts a specific edit transformation (`$KEEP`, `$DELETE`, `$APPEND_x`, etc), and `detect` predicts whether the token is `CORRECT` or `INCORRECT`. The results from the two are used to make a prediction. The predicted transformations are then applied to the errorful input sentence to obtain a corrected sentence.
+The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) and two linear classification heads, one for `labels` and one for `detect`. 
+
+`labels` predicts a specific edit transformation (`$KEEP`, `$DELETE`, `$APPEND_x`, etc), and `detect` predicts whether the token is `CORRECT` or `INCORRECT`. The results from the two are used to make a prediction. The predicted transformations are then applied to the errorful input sentence to obtain a corrected sentence.
 
 Furthermore, in some cases, one pass of predicted transformations is not sufficient to transform the errorful sentence to the target sentence. Therefore, we repeat the process again on the result of the previous pass of transformations, until the model predicts that the sentence no longer contains incorrect tokens.
 
@@ -39,7 +41,7 @@ Install the requirements:
 pip install -r requirements.txt
 ```
 
-The model was trained in Colab with GPUs on each corpus with the following hyperparameters (default is used if unspecified):
+Prepare the training datasets and run the training process:
 ```
 python ./utils/combine.py
 python ./utils/preprocess.py
@@ -53,7 +55,7 @@ Trained weights can be downloaded [here](https://drive.google.com/file/d/1nhWzDZ
 Extract `model.zip` to the `data/` directory. You should have the following folder structure:
 
 ```
-gector-ja/
+gector_jsc/
   utils/
     data/
       model/
@@ -61,8 +63,10 @@ gector-ja/
         model_checkpoint.data-00000-of-00001
         model_checkpoint.index
       ...
-    main.py
-    ...
+  main.py
+  train.py
+  train.sh
+  ...
 ```
 
 After downloading and extracting the weights, the demo app can be run with the command `python main.py`.
