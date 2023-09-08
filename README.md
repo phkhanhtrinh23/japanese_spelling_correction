@@ -31,7 +31,7 @@ The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/be
 Furthermore, in some cases, one pass of predicted transformations is not sufficient to transform the errorful sentence to the target sentence. Therefore, we repeat the process again on the result of the previous pass of transformations, until the model predicts that the sentence no longer contains incorrect tokens.
 
 <figure>
-<img src="images/GEC-scheme.jpg">
+<img src="images/Gector-architecture.png">
 <figcaption>Inference using iterative sequence-tagging (https://www.grammarly.com/blog/engineering/gec-tag-not-rewrite/)</figcaption>
 </figure>
 
