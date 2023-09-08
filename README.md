@@ -1,6 +1,6 @@
-# Grammatical Error Correction for Japanese Spelling Correction - GECToR JSC
+# Japanese Grammatical Error Correction - JGEC
 
-GECToR-JSC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not Rewrite](https://arxiv.org/abs/2005.12592), but it is implemented for Japanese. This project's code is based on the official implementation [gector](https://github.com/grammarly/gector).
+JGEC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not Rewrite](https://arxiv.org/abs/2005.12592), but it is implemented for Japanese. This project's code is based on the official implementation [gector](https://github.com/grammarly/gector).
 
 ## Datasets
 
@@ -19,7 +19,7 @@ GECToR-JSC is described in the paper [GECToR -Grammatical Error Correction: Tag,
 
 ### Synthetically Generated Error Corpus
 
-The **JaWiki**, **Lang8**, **BSD**, **PheMT**, **jpn-eng**, and **jp_address** are to synthetically generate errorful sentences, with a method similar to [Awasthi et al. 2019](https://github.com/awasthiabhijeet/PIE/tree/master/errorify), but with adjustments for Japanese. The details of the implementation can be found in the [preprocessing code](https://github.com/phkhanhtrinh23/gector_jsc/blob/main/utils/preprocess.py) in this repository.
+The **JaWiki**, **Lang8**, **BSD**, **PheMT**, **jpn-eng**, and **jp_address** are to synthetically generate errorful sentences, with a method similar to [Awasthi et al. 2019](https://github.com/awasthiabhijeet/PIE/tree/master/errorify), but with adjustments for Japanese. The details of the implementation can be found in the [preprocessing code](https://github.com/phkhanhtrinh23/JGEC/blob/main/utils/preprocess.py) in this repository.
 
 
 ## Model Architecture
@@ -101,7 +101,7 @@ Trained weights can be downloaded [here](https://drive.google.com/file/d/1nhWzDZ
 Extract `model.zip` to the `./utils/data/model` directory. You should have the following folder structure:
 
 ```
-gector-jsc/
+JGEC/
   utils/
     data/
       model/
@@ -125,7 +125,7 @@ The model can be evaluated with `evaluate.py` on a parallel sentences corpus. Th
 | Method                    | GLEU     |
 | ------------------------- | -------- |
 | Chollampatt and Ng, 2018  | 0.739    |
-| **GECToR-JSC**            | **0.860**|
+| **GJGEC**            | **0.860**|
 
 
 ## Credit
