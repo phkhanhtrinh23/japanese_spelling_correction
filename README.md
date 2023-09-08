@@ -4,7 +4,7 @@ JGEC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not R
 
 ## Datasets
 
-- [Japanese Wikipedia dump](https://dumps.wikimedia.org/), extracted with [WikiExtractor](https://github.com/attardi/wikiextractor), synthetic errors generated using preprocessing scripts
+- [Japanese Wikipedia dump](https://dumps.wikimedia.your.org/jawiki/20220820/jawiki-20220820-pages-articles-multistream.xml.bz2), extracted with [WikiExtractor](https://github.com/attardi/wikiextractor), synthetic errors generated using preprocessing scripts
   - 19,841,767 training sentences
 - [NAIST Lang8 Learner Corpora](https://sites.google.com/site/naistlang8corpora/)
   - 6,066,306 training sentences (generated from 3,084,0376 original sentences)
@@ -12,7 +12,7 @@ JGEC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not R
   - 1,409 training sentences
 - [BSD](https://github.com/tsuruoka-lab/BSD), extracted from this [paper](https://arxiv.org/pdf/2008.01940.pdf)
   - 47,814 training sentences
-- [jpn-eng](http://www.manythings.org/anki/)
+- [jpn-eng](http://www.manythings.org/anki/jpn-eng.zip)
   - 98,507 training sentences
 - [jpn-address](https://drive.google.com/drive/folders/1kBz8wbYztRkgz2nQgQvBD1wkWz8Jwz1-?usp=sharing)
   - 116,494 training sentences
