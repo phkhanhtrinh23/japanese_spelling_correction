@@ -2,6 +2,19 @@
 
 JGEC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not Rewrite](https://arxiv.org/abs/2005.12592), but it is implemented for Japanese. This project's code is based on the official implementation [gector](https://github.com/grammarly/gector).
 
+## Model Architecture
+
+The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) and two linear classification heads, one for `labels` and one for `detect`. 
+
+`labels` predicts a specific edit transformation (`$KEEP`, `$DELETE`, `$APPEND_x`, etc), and `detect` predicts whether the token is `CORRECT` or `INCORRECT`. The results from the two are used to make a prediction. The predicted transformations are then applied to the errorful input sentence to obtain a corrected sentence.
+
+Furthermore, in some cases, one pass of predicted transformations is not sufficient to transform the errorful sentence to the target sentence. Therefore, we repeat the process again on the result of the previous pass of transformations, until the model predicts that the sentence no longer contains incorrect tokens.
+
+<figure>
+<img src="images/Gector-architecture.png">
+<figcaption>Inference using iterative sequence-tagging (https://www.grammarly.com/blog/engineering/gec-tag-not-rewrite/)</figcaption>
+</figure>
+
 ## Datasets
 
 - [Japanese Wikipedia dump](https://dumps.wikimedia.your.org/jawiki/20220820/jawiki-20220820-pages-articles-multistream.xml.bz2), extracted with [WikiExtractor](https://github.com/attardi/wikiextractor), synthetic errors generated using preprocessing scripts
@@ -20,20 +33,6 @@ JGEC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not R
 ### Synthetically Generated Error Corpus
 
 The **JaWiki**, **Lang8**, **BSD**, **PheMT**, **jpn-eng**, and **jp_address** are to synthetically generate errorful sentences, with a method similar to [Awasthi et al. 2019](https://github.com/awasthiabhijeet/PIE/tree/master/errorify), but with adjustments for Japanese. The details of the implementation can be found in the [preprocessing code](https://github.com/phkhanhtrinh23/JGEC/blob/main/utils/preprocess.py) in this repository.
-
-
-## Model Architecture
-
-The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) and two linear classification heads, one for `labels` and one for `detect`. 
-
-`labels` predicts a specific edit transformation (`$KEEP`, `$DELETE`, `$APPEND_x`, etc), and `detect` predicts whether the token is `CORRECT` or `INCORRECT`. The results from the two are used to make a prediction. The predicted transformations are then applied to the errorful input sentence to obtain a corrected sentence.
-
-Furthermore, in some cases, one pass of predicted transformations is not sufficient to transform the errorful sentence to the target sentence. Therefore, we repeat the process again on the result of the previous pass of transformations, until the model predicts that the sentence no longer contains incorrect tokens.
-
-<figure>
-<img src="images/Gector-architecture.png">
-<figcaption>Inference using iterative sequence-tagging (https://www.grammarly.com/blog/engineering/gec-tag-not-rewrite/)</figcaption>
-</figure>
 
 ## Training
 Install the requirements:
