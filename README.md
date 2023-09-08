@@ -2,8 +2,6 @@
 
 GECToR-JSC is described in the paper [GECToR -Grammatical Error Correction: Tag, Not Rewrite](https://arxiv.org/abs/2005.12592), but it is implemented for Japanese. This project's code is based on the official implementation [gector](https://github.com/grammarly/gector).
 
-The [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) used in this project was provided by Tohoku University NLP Lab.
-
 ## Datasets
 
 - [Japanese Wikipedia dump](https://dumps.wikimedia.org/), extracted with [WikiExtractor](https://github.com/attardi/wikiextractor), synthetic errors generated using preprocessing scripts
@@ -11,27 +9,31 @@ The [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2)
 - [NAIST Lang8 Learner Corpora](https://sites.google.com/site/naistlang8corpora/)
   - 6,066,306 training sentences (generated from 3,084,0376 original sentences)
 - [PheMT](https://github.com/cl-tohoku/PheMT), extracted from this [paper](https://arxiv.org/pdf/2011.02121.pdf)
+  - 1,409 training sentences
 - [BSD](https://github.com/tsuruoka-lab/BSD), extracted from this [paper](https://arxiv.org/pdf/2008.01940.pdf)
+  - 47,814 sentences
 - [jpn-eng](http://www.manythings.org/anki/)
+  - 98,507 sentences
 - [jpn-address](https://drive.google.com/drive/folders/1kBz8wbYztRkgz2nQgQvBD1wkWz8Jwz1-?usp=sharing)
+  - 116,494 sentences
 
 ### Synthetically Generated Error Corpus
 
-The **JaWiki**, **Lang8**, **BSD**, **PheMT**, **jpn-eng**, and **jp_address** are to synthetically generate errorful sentences, with a method similar to [Awasthi et al. 2019](https://github.com/awasthiabhijeet/PIE/tree/master/errorify), but with adjustments for Japanese. The details of the implementation can be found in the [preprocessing scripts](https://github.com/phkhanhtrinh23/gector_jsc/blob/main/utils/preprocess.py) in this repository.
+The **JaWiki**, **Lang8**, **BSD**, **PheMT**, **jpn-eng**, and **jp_address** are to synthetically generate errorful sentences, with a method similar to [Awasthi et al. 2019](https://github.com/awasthiabhijeet/PIE/tree/master/errorify), but with adjustments for Japanese. The details of the implementation can be found in the [preprocessing code](https://github.com/phkhanhtrinh23/gector_jsc/blob/main/utils/preprocess.py) in this repository.
 
-Example error-generated sentence:
-```
-西口側には宿泊施設や地元の日本酒や海、山の幸を揃えた飲食店、呑み屋など多くある。        # Correct
-西口側までは宿泊から施設や地元の日本酒や、山の幸を揃えた飲食は店、呑み屋など多くあろう。 # Errorful
-```
 
 ## Model Architecture
 
-The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) and two linear classification heads, one for `labels` and one for `detect`. `labels` predicts a specific edit transformation (`$KEEP`, `$DELETE`, `$APPEND_x`, etc), and `detect` predicts whether the token is `CORRECT` or `INCORRECT`. The results from the two are used to make a prediction. The predicted transformations are then applied to the errorful input sentence to obtain a corrected sentence.
+The model consists of a [bert-base-japanese](https://huggingface.co/cl-tohoku/bert-base-japanese-v2) and two linear classification heads, one for `labels` and one for `detect`. 
+
+`labels` predicts a specific edit transformation (`$KEEP`, `$DELETE`, `$APPEND_x`, etc), and `detect` predicts whether the token is `CORRECT` or `INCORRECT`. The results from the two are used to make a prediction. The predicted transformations are then applied to the errorful input sentence to obtain a corrected sentence.
 
 Furthermore, in some cases, one pass of predicted transformations is not sufficient to transform the errorful sentence to the target sentence. Therefore, we repeat the process again on the result of the previous pass of transformations, until the model predicts that the sentence no longer contains incorrect tokens.
 
-For more details about the model architecture and __iterative sequence tagging approach__, refer to the GECToR [article](https://www.grammarly.com/blog/engineering/gec-tag-not-rewrite/) or the [official implementation](https://github.com/grammarly/gector/blob/master/gector/seq2labels_model.py).
+<figure>
+<img src="images/GEC-scheme.jpg">
+<figcaption>Inference using iterative sequence-tagging (https://www.grammarly.com/blog/engineering/gec-tag-not-rewrite/)</figcaption>
+</figure>
 
 ## Training
 Install the requirements:
@@ -46,26 +48,72 @@ python ./utils/preprocess.py
 bash train.sh
 ```
 
-## Demo
+## Demo code
+```python
+from model import GEC
+import unicodedata
+
+class GECTOR_JSC():
+    def __init__(self, 
+                 weights_path="./utils/data/model/model_checkpoint", 
+                 vocab_dir="./utils/data/output_vocab",
+                 transforms_file="./utils/data/transform.txt"):
+        self.vocab_dir = vocab_dir
+        self.transforms_file = transforms_file
+        self.weights_path = weights_path
+        
+        self.gec = GEC(vocab_path=self.vocab_dir, 
+                       verb_adj_forms_path=self.transforms_file,
+                       pretrained_weights_path=self.weights_path)
+
+    def __call__(self, source_sents, batch_size=64):
+        new_source_sents = []
+        for src_sent in source_sents:
+            if isinstance(src_sent, str):
+                converted_sentence = unicodedata.normalize('NFKC', src_sent).replace(' ', '')
+                new_source_sents.append(converted_sentence)
+        source_sents = new_source_sents
+        
+        source_batches = [source_sents[i:i + batch_size]
+                          for i in range(0, len(source_sents), batch_size)]
+        pred_tokens = []
+        for i, source_batch in enumerate(source_batches):
+            pred_batch = self.gec.correct(source_batch)
+            pred_batch_tokens = [sent for sent in pred_batch]
+            pred_tokens.extend(pred_batch_tokens)
+
+        return pred_tokens
+
+obj = GECTOR_JSC()
+source_sents = ["そして10時くらいに、喫茶店でレーシャルとジョノサンとベルに会いました",
+                "一緒にコーヒーを飲みながら、話しました。"]
+
+res = obj(source_sents)
+
+print("Results:", res)
+# Results: ['そして10時くらいに、喫茶店でレーシャルとジョノサンとベルに会いました', 
+#         '一緒にコーヒーを飲みながら、話しました。']
+
+```
 
 Trained weights can be downloaded [here](https://drive.google.com/file/d/1nhWzDZnZKxLvqwYMLlwRNOkMK2aXv4-5/view?usp=sharing). The trained weights have been pre-trained on JaWiki and Lang8.
 
-Extract `model.zip` to the `data/` directory. You should have the following folder structure:
+Extract `model.zip` to the `./utils/data/model` directory. You should have the following folder structure:
 
 ```
-gector-ja/
+gector-jsc/
   utils/
     data/
       model/
         checkpoint
         model_checkpoint.data-00000-of-00001
         model_checkpoint.index
-      ...
-    main.py
-    ...
 ```
 
-After downloading and extracting the weights, the demo app can be run with the command `python main.py`.
+After downloading and extracting the weights, the demo app can be run with the command 
+```python
+python main.py
+```
 
 You may need to `pip install flask` if Flask is not already installed.
 
@@ -73,15 +121,12 @@ You may need to `pip install flask` if Flask is not already installed.
 
 The model can be evaluated with `evaluate.py` on a parallel sentences corpus. The evaluation corpus used was [TMU Evaluation Corpus for Japanese Learners (TEC_JL)](https://github.com/koyama-aomi/TEC-JL), and the metric is GLEU score.
 
-Using the model trained with the parameters described above, it achieved a GLEU score of around **0.83**, which appears to outperform the CNN-based method by Chollampatt and Ng, 2018 (state of the art on the CoNLL-2014 dataset prior to transformer-based models), that Koyama et al. 2020 chose to use in their paper.
+### TEC-JL Results
+| Method                    | GLEU     |
+| ------------------------- | -------- |
+| Chollampatt and Ng, 2018  | 0.739    |
+| **GECToR-JSC**            | **0.860**|
 
-#### TMU Evaluation Corpus for Japanese Learners (GEC dataset for Japanese)
-| Method                    | GLEU  |
-| ------------------------- | ----- |
-| Chollampatt and Ng, 2018  | 0.739 |
-| __gector_jsc (mine)__  | __0.83__  |
-
-In this project GLEU score was used as in Koyama et al. 2020.
 
 ## Credit
 [jonnyli1125
