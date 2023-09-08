@@ -50,9 +50,9 @@ bash train.sh
 
 ## Demo
 ```python
-from module import GECTOR_JSC
+from module import JGEC
 
-obj = GECTOR_JSC()
+obj = JGEC()
 source_sents = ["そして10時くらいに、喫茶店でレーシャルとジョノサンとベルに会いました",
                 "一緒にコーヒーを飲みながら、話しました。"]
 
