@@ -48,41 +48,9 @@ python ./utils/preprocess.py
 bash train.sh
 ```
 
-## Demo code
+## Demo
 ```python
-from model import GEC
-import unicodedata
-
-class GECTOR_JSC():
-    def __init__(self, 
-                 weights_path="./utils/data/model/model_checkpoint", 
-                 vocab_dir="./utils/data/output_vocab",
-                 transforms_file="./utils/data/transform.txt"):
-        self.vocab_dir = vocab_dir
-        self.transforms_file = transforms_file
-        self.weights_path = weights_path
-        
-        self.gec = GEC(vocab_path=self.vocab_dir, 
-                       verb_adj_forms_path=self.transforms_file,
-                       pretrained_weights_path=self.weights_path)
-
-    def __call__(self, source_sents, batch_size=64):
-        new_source_sents = []
-        for src_sent in source_sents:
-            if isinstance(src_sent, str):
-                converted_sentence = unicodedata.normalize('NFKC', src_sent).replace(' ', '')
-                new_source_sents.append(converted_sentence)
-        source_sents = new_source_sents
-        
-        source_batches = [source_sents[i:i + batch_size]
-                          for i in range(0, len(source_sents), batch_size)]
-        pred_tokens = []
-        for i, source_batch in enumerate(source_batches):
-            pred_batch = self.gec.correct(source_batch)
-            pred_batch_tokens = [sent for sent in pred_batch]
-            pred_tokens.extend(pred_batch_tokens)
-
-        return pred_tokens
+from module import GECTOR_JSC
 
 obj = GECTOR_JSC()
 source_sents = ["そして10時くらいに、喫茶店でレーシャルとジョノサンとベルに会いました",
@@ -93,9 +61,9 @@ res = obj(source_sents)
 print("Results:", res)
 # Results: ['そして10時くらいに、喫茶店でレーシャルとジョノサンとベルに会いました', 
 #         '一緒にコーヒーを飲みながら、話しました。']
-
 ```
 
+## Inference
 Trained weights can be downloaded [here](https://drive.google.com/file/d/1nhWzDZnZKxLvqwYMLlwRNOkMK2aXv4-5/view?usp=sharing). The trained weights have been pre-trained on JaWiki and Lang8.
 
 Extract `model.zip` to the `./utils/data/model` directory. You should have the following folder structure:
