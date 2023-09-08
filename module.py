@@ -2,7 +2,7 @@ from model import GEC
 from unidecode import unidecode
 import unicodedata
 
-class GECTOR_JSC():
+class JGEC():
     def __init__(self, 
                  weights_path="./utils/data/model/model_checkpoint", 
                  vocab_dir="./utils/data/output_vocab",
@@ -34,7 +34,7 @@ class GECTOR_JSC():
         return pred_tokens
 
 if __name__ == '__main__':
-    obj = GECTOR_JSC()
+    obj = JGEC()
     source_sents = ["そして10時くらいに、喫茶店でレーシャルとジョノサンとベルに会いました",
                     "一緒にコーヒーを飲みながら、話しました。",
                     "来週、レーシャルと私はメルボンに行くつもりです。",
