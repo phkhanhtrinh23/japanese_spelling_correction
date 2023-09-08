@@ -125,7 +125,7 @@ The model can be evaluated with `evaluate.py` on a parallel sentences corpus. Th
 | Method                    | GLEU     |
 | ------------------------- | -------- |
 | Chollampatt and Ng, 2018  | 0.739    |
-| **GJGEC**            | **0.860**|
+| **JGEC**            | **0.860**|
 
 
 ## Credit
