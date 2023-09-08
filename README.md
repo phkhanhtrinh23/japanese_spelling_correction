@@ -11,11 +11,11 @@ GECToR-JSC is described in the paper [GECToR -Grammatical Error Correction: Tag,
 - [PheMT](https://github.com/cl-tohoku/PheMT), extracted from this [paper](https://arxiv.org/pdf/2011.02121.pdf)
   - 1,409 training sentences
 - [BSD](https://github.com/tsuruoka-lab/BSD), extracted from this [paper](https://arxiv.org/pdf/2008.01940.pdf)
-  - 47,814 sentences
+  - 47,814 training sentences
 - [jpn-eng](http://www.manythings.org/anki/)
-  - 98,507 sentences
+  - 98,507 training sentences
 - [jpn-address](https://drive.google.com/drive/folders/1kBz8wbYztRkgz2nQgQvBD1wkWz8Jwz1-?usp=sharing)
-  - 116,494 sentences
+  - 116,494 training sentences
 
 ### Synthetically Generated Error Corpus
 
