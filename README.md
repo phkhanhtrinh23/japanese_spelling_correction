@@ -63,7 +63,7 @@ print("Results:", res)
 ```
 
 ## Inference
-Trained weights can be downloaded [here](https://drive.google.com/file/d/1nhWzDZnZKxLvqwYMLlwRNOkMK2aXv4-5/view?usp=sharing). The trained weights have been pre-trained on JaWiki and Lang8.
+Trained weights can be downloaded [here](https://drive.google.com/drive/folders/10MECfAjYBN02i2AULdtp8D_d5kx6WPwM?usp=sharing). The trained weights have been trained on all of the datasets mentioned above.
 
 Extract `model.zip` to the `./utils/data/model` directory. You should have the following folder structure:
 
